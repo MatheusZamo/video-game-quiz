@@ -3,7 +3,7 @@ import { useEffect, useReducer } from "react"
 const reducer = (state, action) =>
   ({
     set_api_data: { ...state, apiData: action.apiData },
-    clicked_option: { ...state, clickedOption: action.index },
+    clicked_some_option: { ...state, clickedOption: action.index },
   })[action.type] || state
 
 const App = () => {
@@ -23,7 +23,7 @@ const App = () => {
   }, [])
 
   const handleClickOption = (index) =>
-    dispatch({ type: "clicked_option", index })
+    dispatch({ type: "clicked_some_option", index })
 
   return (
     <div className="app">
@@ -39,6 +39,7 @@ const App = () => {
                       <button
                         onClick={() => handleClickOption(index)}
                         className="btn btn-option"
+                        disabled={state.clickedOption !== null}
                       >
                         {option}
                       </button>
