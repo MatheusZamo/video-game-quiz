@@ -24,21 +24,18 @@ const App = () => {
     <div className="app">
       <main className="main">
         <div>
-          <h4>Pergunta aqui</h4>
-          <ul className="options">
-            <li>
-              <button className="btn btn-option">Opção 1</button>
-            </li>
-            <li>
-              <button className="btn btn-option">Opção 2</button>
-            </li>
-            <li>
-              <button className="btn btn-option">Opção 3</button>
-            </li>
-            <li>
-              <button className="btn btn-option">Opção 4</button>
-            </li>
-          </ul>
+          {state.apiData.length > 0 && (
+            <>
+              <h4>{state.apiData[state.currentQuestion].question}</h4>
+              <ul className="options">
+                {state.apiData[state.currentQuestion].options.map((option) => (
+                  <li key={option}>
+                    <button className="btn btn-option">{option}</button>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </div>
         <div>
           <button className="btn btn-ui">Próxima</button>
