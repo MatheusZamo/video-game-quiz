@@ -3,12 +3,14 @@ import { useEffect, useReducer } from "react"
 const reducer = (state, action) =>
   ({
     set_api_data: { ...state, apiData: action.apiData },
+    clicked_option: { ...state, clickedOption: action.index },
   })[action.type] || state
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, {
     currentQuestion: 0,
     apiData: [],
+    clickedOption: null,
   })
 
   useEffect(() => {
@@ -20,6 +22,9 @@ const App = () => {
       .catch((error) => alert(error.message))
   }, [])
 
+  const handleClickOption = (index) =>
+    dispatch({ type: "clicked_option", index })
+
   return (
     <div className="app">
       <main className="main">
@@ -28,11 +33,18 @@ const App = () => {
             <>
               <h4>{state.apiData[state.currentQuestion].question}</h4>
               <ul className="options">
-                {state.apiData[state.currentQuestion].options.map((option) => (
-                  <li key={option}>
-                    <button className="btn btn-option">{option}</button>
-                  </li>
-                ))}
+                {state.apiData[state.currentQuestion].options.map(
+                  (option, index) => (
+                    <li key={option}>
+                      <button
+                        onClick={() => handleClickOption(index)}
+                        className="btn btn-option"
+                      >
+                        {option}
+                      </button>
+                    </li>
+                  ),
+                )}
               </ul>
             </>
           )}
