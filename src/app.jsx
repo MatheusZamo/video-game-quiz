@@ -20,6 +20,7 @@ const reducer = (state, action) =>
           ? 0
           : state.currentQuestion + 1,
       clickedOption: null,
+      shouldShowResult: state.currentQuestion + 1 === state.apiData.length,
     },
   })[action.type] || state
 
@@ -28,6 +29,7 @@ const initialState = {
   apiData: [],
   clickedOption: null,
   userScore: 0,
+  shouldShowResult: false,
 }
 
 const App = () => {
@@ -54,7 +56,8 @@ const App = () => {
     <div className="app">
       <main className="main">
         <div>
-          {state.apiData.length > 0 && (
+          {state.shouldShowResult && <p>Resultado aqui</p>}
+          {state.apiData.length > 0 && !state.shouldShowResult && (
             <>
               <h4>{state.apiData[state.currentQuestion].question}</h4>
               <ul className="options">
