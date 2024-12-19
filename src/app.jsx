@@ -9,7 +9,7 @@ const reducer = (state, action) =>
       clickedOption: action.index,
       userScore:
         action.index === state.apiData[state.currentQuestion]?.correctOption
-          ? state.userScore + 10
+          ? state.userScore + state.apiData[state.currentQuestion]?.points
           : state.userScore,
     },
 
@@ -47,16 +47,22 @@ const App = () => {
   const handleClickOption = (index) =>
     dispatch({ type: "clicked_some_option", index })
 
-  const userHasAnswered = state.clickedOption !== null
-
   const handleClickNextQuestion = () =>
     dispatch({ type: "clicked_next_question" })
+
+  const userHasAnswered = state.clickedOption !== null
+  const maxScore = state.apiData.reduce((acc, q) => acc + q.points, 0)
+  const percentage = (state.userScore / maxScore) * 100
 
   return (
     <div className="app">
       <main className="main">
         <div>
-          {state.shouldShowResult && <p>Resultado aqui</p>}
+          {state.shouldShowResult && (
+            <p>
+              Você fez {state.userScore} pontos de {maxScore} ({percentage}%)
+            </p>
+          )}
           {state.apiData.length > 0 && !state.shouldShowResult && (
             <>
               <h4>{state.apiData[state.currentQuestion].question}</h4>
