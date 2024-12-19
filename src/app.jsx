@@ -12,6 +12,12 @@ const reducer = (state, action) =>
           ? state.userScore + 10
           : state.userScore,
     },
+
+    clicked_next_question: {
+      ...state,
+      currentQuestion: state.currentQuestion + 1,
+      clickedOption: null,
+    },
   })[action.type] || state
 
 const initialState = {
@@ -37,6 +43,9 @@ const App = () => {
     dispatch({ type: "clicked_some_option", index })
 
   const userHasAnswered = state.clickedOption !== null
+
+  const handleClickNextQuestion = () =>
+    dispatch({ type: "clicked_next_question" })
 
   return (
     <div className="app">
@@ -74,7 +83,11 @@ const App = () => {
           )}
         </div>
         <div>
-          {userHasAnswered && <button className="btn btn-ui">Próxima</button>}
+          {userHasAnswered && (
+            <button onClick={handleClickNextQuestion} className="btn btn-ui">
+              Próxima
+            </button>
+          )}
         </div>
       </main>
     </div>
