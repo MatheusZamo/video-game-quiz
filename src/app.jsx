@@ -3,15 +3,26 @@ import { useEffect, useReducer } from "react"
 const reducer = (state, action) =>
   ({
     set_api_data: { ...state, apiData: action.apiData },
-    clicked_some_option: { ...state, clickedOption: action.index },
+
+    clicked_some_option: {
+      ...state,
+      clickedOption: action.index,
+      userScore:
+        action.index === state.apiData[state.currentQuestion]?.correctOption
+          ? state.userScore + 10
+          : state.userScore,
+    },
   })[action.type] || state
 
+const initialState = {
+  currentQuestion: 0,
+  apiData: [],
+  clickedOption: null,
+  userScore: 0,
+}
+
 const App = () => {
-  const [state, dispatch] = useReducer(reducer, {
-    currentQuestion: 0,
-    apiData: [],
-    clickedOption: null,
-  })
+  const [state, dispatch] = useReducer(reducer, initialState)
 
   useEffect(() => {
     fetch(
