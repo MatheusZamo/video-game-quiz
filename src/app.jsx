@@ -36,6 +36,8 @@ const App = () => {
   const handleClickOption = (index) =>
     dispatch({ type: "clicked_some_option", index })
 
+  const userHasAnswered = state.clickedOption !== null
+
   return (
     <div className="app">
       <main className="main">
@@ -53,7 +55,7 @@ const App = () => {
                           state.clickedOption === index ? "answer" : ""
                         }
                         ${
-                          state.clickedOption !== null
+                          userHasAnswered
                             ? state.apiData[state.currentQuestion]
                                 ?.correctOption === index
                               ? "correct"
@@ -72,7 +74,7 @@ const App = () => {
           )}
         </div>
         <div>
-          <button className="btn btn-ui">Próxima</button>
+          {userHasAnswered && <button className="btn btn-ui">Próxima</button>}
         </div>
       </main>
     </div>
