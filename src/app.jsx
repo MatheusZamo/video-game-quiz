@@ -36,6 +36,7 @@ const initialState = {
   clickedOption: null,
   userScore: 0,
   shouldShowResult: false,
+  shouldShowHomePage: true,
 }
 
 const App = () => {
@@ -70,6 +71,16 @@ const App = () => {
       </header>
       <main className="main">
         <div>
+          {state.shouldShowHomePage && (
+            <div className="start">
+              <h2>Bem vindo ao Quiz dos Videogames!</h2>
+              <h4>5 questões pra te testar</h4>
+              <div>
+                <button className="btn btn-ui">Bora começar</button>
+              </div>
+            </div>
+          )}
+
           {state.shouldShowResult && (
             <>
               <div className="result">
@@ -83,37 +94,40 @@ const App = () => {
               </button>
             </>
           )}
-          {state.apiData.length > 0 && !state.shouldShowResult && (
-            <>
-              <h4>{state.apiData[state.currentQuestion].question}</h4>
-              <ul className="options">
-                {state.apiData[state.currentQuestion].options.map(
-                  (option, index) => {
-                    const answerClass =
-                      state.clickedOption === index ? "answer" : ""
-                    const correctOrWrongClass = userHasAnswered
-                      ? state.apiData[state.currentQuestion]?.correctOption ===
-                        index
-                        ? "correct"
-                        : "wrong"
-                      : ""
 
-                    return (
-                      <li key={option}>
-                        <button
-                          onClick={() => handleClickOption(index)}
-                          className={`btn btn-option ${answerClass} ${correctOrWrongClass}`}
-                          disabled={userHasAnswered}
-                        >
-                          {option}
-                        </button>
-                      </li>
-                    )
-                  },
-                )}
-              </ul>
-            </>
-          )}
+          {state.apiData.length > 0 &&
+            !state.shouldShowResult &&
+            !state.shouldShowHomePage && (
+              <>
+                <h4>{state.apiData[state.currentQuestion].question}</h4>
+                <ul className="options">
+                  {state.apiData[state.currentQuestion].options.map(
+                    (option, index) => {
+                      const answerClass =
+                        state.clickedOption === index ? "answer" : ""
+                      const correctOrWrongClass = userHasAnswered
+                        ? state.apiData[state.currentQuestion]
+                            ?.correctOption === index
+                          ? "correct"
+                          : "wrong"
+                        : ""
+
+                      return (
+                        <li key={option}>
+                          <button
+                            onClick={() => handleClickOption(index)}
+                            className={`btn btn-option ${answerClass} ${correctOrWrongClass}`}
+                            disabled={userHasAnswered}
+                          >
+                            {option}
+                          </button>
+                        </li>
+                      )
+                    },
+                  )}
+                </ul>
+              </>
+            )}
         </div>
         <div>
           {userHasAnswered && (
