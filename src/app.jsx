@@ -27,6 +27,7 @@ const reducer = (state, action) =>
       ...state,
       userScore: 0,
       shouldShowResult: false,
+      shouldShowHomePage: true,
     },
 
     clicked_start: {
