@@ -28,6 +28,11 @@ const reducer = (state, action) =>
       userScore: 0,
       shouldShowResult: false,
     },
+
+    clicked_start: {
+      ...state,
+      shouldShowHomePage: false,
+    },
   })[action.type] || state
 
 const initialState = {
@@ -59,6 +64,8 @@ const App = () => {
 
   const handleClickRestart = () => dispatch({ type: "clicked_restart" })
 
+  const handleClickStart = () => dispatch({ type: "clicked_start" })
+
   const userHasAnswered = state.clickedOption !== null
   const maxScore = state.apiData.reduce((acc, q) => acc + q.points, 0)
   const percentage = (state.userScore / maxScore) * 100
@@ -76,7 +83,9 @@ const App = () => {
               <h2>Bem vindo ao Quiz dos Videogames!</h2>
               <h4>5 questões pra te testar</h4>
               <div>
-                <button className="btn btn-ui">Bora começar</button>
+                <button onClick={handleClickStart} className="btn btn-ui">
+                  Bora começar
+                </button>
               </div>
             </div>
           )}
