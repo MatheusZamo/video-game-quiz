@@ -20,19 +20,21 @@ const reducer = (state, action) =>
           ? 0
           : state.currentQuestion + 1,
       clickedOption: null,
-      shouldShowResult: state.currentQuestion + 1 === state.apiData.length,
+      appStatus:
+        state.currentQuestion + 1 === state.apiData.length
+          ? "finished"
+          : state.appStatus,
     },
 
     clicked_restart: {
       ...state,
       userScore: 0,
-      shouldShowResult: false,
-      shouldShowHomePage: true,
+      appStatus: "ready",
     },
 
     clicked_start: {
       ...state,
-      shouldShowHomePage: false,
+      appStatus: "active",
     },
   })[action.type] || state
 
@@ -41,8 +43,7 @@ const initialState = {
   apiData: [],
   clickedOption: null,
   userScore: 0,
-  shouldShowResult: false,
-  shouldShowHomePage: true,
+  appStatus: "ready",
 }
 
 const App = () => {
@@ -79,7 +80,7 @@ const App = () => {
       </header>
       <main className="main">
         <div>
-          {state.shouldShowHomePage && (
+          {state.appStatus === "ready" && (
             <div className="start">
               <h2>Bem vindo ao Quiz dos Videogames!</h2>
               <h4>5 questões pra te testar</h4>
@@ -91,7 +92,7 @@ const App = () => {
             </div>
           )}
 
-          {state.shouldShowResult && (
+          {state.appStatus === "finished" && (
             <>
               <div className="result">
                 <span>
@@ -105,39 +106,38 @@ const App = () => {
             </>
           )}
 
-          {state.apiData.length > 0 &&
-            !state.shouldShowResult &&
-            !state.shouldShowHomePage && (
-              <>
-                <h4>{state.apiData[state.currentQuestion].question}</h4>
-                <ul className="options">
-                  {state.apiData[state.currentQuestion].options.map(
-                    (option, index) => {
-                      const answerClass =
-                        state.clickedOption === index ? "answer" : ""
-                      const correctOrWrongClass = userHasAnswered
-                        ? state.apiData[state.currentQuestion]
-                            ?.correctOption === index
-                          ? "correct"
-                          : "wrong"
-                        : ""
+          {state.apiData.length > 0 && state.appStatus === "active" && (
+            <>
+              <h4>{state.apiData[state.currentQuestion].question}</h4>
+              <ul className="options">
+                {state.apiData[state.currentQuestion].options.map(
+                  (option, index) => {
+                    const answerClass =
+                      state.clickedOption === index ? "answer" : ""
+                    const correctOrWrongClass = userHasAnswered
+                      ? state.apiData[state.currentQuestion]?.correctOption ===
+                        index
+                        ? "correct"
+                        : "wrong"
+                      : ""
 
-                      return (
-                        <li key={option}>
-                          <button
-                            onClick={() => handleClickOption(index)}
-                            className={`btn btn-option ${answerClass} ${correctOrWrongClass}`}
-                            disabled={userHasAnswered}
-                          >
-                            {option}
-                          </button>
-                        </li>
-                      )
-                    },
-                  )}
-                </ul>
-              </>
-            )}
+                    return (
+                      <li key={option}>
+                        <button
+                          onClick={() => handleClickOption(index)}
+                          className={`btn btn-option ${answerClass} ${correctOrWrongClass}`}
+                          disabled={userHasAnswered}
+                        >
+                          {option}
+                        </button>
+                      </li>
+                    )
+                  },
+                )}
+              </ul>
+              <span className="timer">00:00</span>
+            </>
+          )}
         </div>
         <div>
           {userHasAnswered && (
