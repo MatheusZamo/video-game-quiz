@@ -1,5 +1,7 @@
 import { useEffect, useReducer } from "react"
 
+const secondsPerQuestion = 30
+
 const reducer = (state, action) =>
   ({
     set_api_data: { ...state, apiData: action.apiData },
@@ -24,17 +26,30 @@ const reducer = (state, action) =>
         state.currentQuestion + 1 === state.apiData.length
           ? "finished"
           : state.appStatus,
+      seconds:
+        state.currentQuestion + 1 === state.apiData.length
+          ? null
+          : state.seconds,
     },
 
     clicked_restart: {
       ...state,
       userScore: 0,
       appStatus: "ready",
+      currentQuestion: 0,
+      clickedOption: null,
     },
 
     clicked_start: {
       ...state,
       appStatus: "active",
+      seconds: secondsPerQuestion * state.apiData.length,
+    },
+
+    tick: {
+      ...state,
+      seconds: state.seconds === 0 ? null : state.seconds - 1,
+      appStatus: state.seconds === 0 ? "finished" : state.appStatus,
     },
   })[action.type] || state
 
@@ -44,6 +59,7 @@ const initialState = {
   clickedOption: null,
   userScore: 0,
   appStatus: "ready",
+  seconds: null,
 }
 
 const App = () => {
@@ -58,6 +74,15 @@ const App = () => {
       .catch((error) => alert(error.message))
   }, [])
 
+  useEffect(() => {
+    if (state.seconds === null) {
+      return
+    }
+
+    const id = setTimeout(() => dispatch({ type: "tick" }), 1000)
+    return () => clearTimeout(id)
+  }, [state.seconds])
+
   const handleClickOption = (index) =>
     dispatch({ type: "clicked_some_option", index })
 
@@ -71,6 +96,8 @@ const App = () => {
   const userHasAnswered = state.clickedOption !== null
   const maxScore = state.apiData.reduce((acc, q) => acc + q.points, 0)
   const percentage = (state.userScore / maxScore) * 100
+  const minutes = Math.floor(state.seconds / 60)
+  const seconds = state.seconds % 60
 
   return (
     <div className="app">
@@ -135,7 +162,10 @@ const App = () => {
                   },
                 )}
               </ul>
-              <span className="timer">00:00</span>
+              <div className="timer">
+                {minutes < 10 ? `0${minutes}` : minutes}:
+                {seconds < 10 ? `0${seconds}` : seconds}
+              </div>
             </>
           )}
         </div>
