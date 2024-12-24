@@ -1,6 +1,4 @@
-import { useEffect, useReducer } from "react"
-
-const secondsPerQuestion = 30
+import { useEffect, useReducer, useState } from "react"
 
 const reducer = (state, action) =>
   ({
@@ -26,10 +24,6 @@ const reducer = (state, action) =>
         state.currentQuestion + 1 === state.apiData.length
           ? "finished"
           : state.appStatus,
-      seconds:
-        state.currentQuestion + 1 === state.apiData.length
-          ? null
-          : state.seconds,
     },
 
     clicked_restart: {
@@ -43,13 +37,11 @@ const reducer = (state, action) =>
     clicked_start: {
       ...state,
       appStatus: "active",
-      seconds: secondsPerQuestion * state.apiData.length,
     },
 
-    tick: {
+    game_over: {
       ...state,
-      seconds: state.seconds === 0 ? null : state.seconds - 1,
-      appStatus: state.seconds === 0 ? "finished" : state.appStatus,
+      appStatus: "finished",
     },
   })[action.type] || state
 
@@ -59,7 +51,37 @@ const initialState = {
   clickedOption: null,
   userScore: 0,
   appStatus: "ready",
-  seconds: null,
+}
+
+const secondsPerQuestion = 30
+
+const Timer = ({ appState, onHandleTimer }) => {
+  const [seconds, setSeconds] = useState(
+    secondsPerQuestion * appState.apiData.length,
+  )
+
+  useEffect(() => {
+    if (seconds === 0) {
+      onHandleTimer({ message: "game_over" })
+      return
+    }
+
+    if (appState.status === "finished") {
+      return
+    }
+
+    const id = setTimeout(() => setSeconds((prev) => prev - 1), 1000)
+    return () => clearTimeout(id)
+  }, [seconds, appState, onHandleTimer])
+
+  const mins = Math.floor(seconds / 60)
+  const secs = seconds % 60
+
+  return (
+    <div className="timer">
+      {mins < 10 ? `0${mins}` : mins}:{secs < 10 ? `0${secs}` : secs}
+    </div>
+  )
 }
 
 const App = () => {
@@ -74,15 +96,6 @@ const App = () => {
       .catch((error) => alert(error.message))
   }, [])
 
-  useEffect(() => {
-    if (state.seconds === null) {
-      return
-    }
-
-    const id = setTimeout(() => dispatch({ type: "tick" }), 1000)
-    return () => clearTimeout(id)
-  }, [state.seconds])
-
   const handleClickOption = (index) =>
     dispatch({ type: "clicked_some_option", index })
 
@@ -93,11 +106,11 @@ const App = () => {
 
   const handleClickStart = () => dispatch({ type: "clicked_start" })
 
+  const handleTimer = ({ message }) => dispatch({ type: message })
+
   const userHasAnswered = state.clickedOption !== null
   const maxScore = state.apiData.reduce((acc, q) => acc + q.points, 0)
   const percentage = (state.userScore / maxScore) * 100
-  const minutes = Math.floor(state.seconds / 60)
-  const seconds = state.seconds % 60
 
   return (
     <div className="app">
@@ -162,10 +175,7 @@ const App = () => {
                   },
                 )}
               </ul>
-              <div className="timer">
-                {minutes < 10 ? `0${minutes}` : minutes}:
-                {seconds < 10 ? `0${seconds}` : seconds}
-              </div>
+              <Timer appState={state} onHandleTimer={handleTimer} />
             </>
           )}
         </div>
@@ -184,3 +194,9 @@ const App = () => {
 }
 
 export { App }
+
+// ,
+//       seconds:
+//         state.currentQuestion + 1 === state.apiData.length
+//           ? null
+//           : state.seconds,
