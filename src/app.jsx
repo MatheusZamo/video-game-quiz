@@ -66,13 +66,9 @@ const Timer = ({ appState, onHandleTimer }) => {
       return
     }
 
-    if (appState.status === "finished") {
-      return
-    }
-
     const id = setTimeout(() => setSeconds((prev) => prev - 1), 1000)
     return () => clearTimeout(id)
-  }, [seconds, appState, onHandleTimer])
+  }, [seconds, onHandleTimer])
 
   const mins = Math.floor(seconds / 60)
   const secs = seconds % 60
