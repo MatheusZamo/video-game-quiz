@@ -1,4 +1,6 @@
-import { useEffect, useReducer, useState } from "react"
+import { useEffect, useReducer } from "react"
+
+const secondsPerQuestion = 30
 
 const reducer = (state, action) =>
   ({
@@ -24,6 +26,10 @@ const reducer = (state, action) =>
         state.currentQuestion + 1 === state.apiData.length
           ? "finished"
           : state.appStatus,
+      seconds:
+        state.currentQuestion + 1 === state.apiData.length
+          ? null
+          : state.seconds,
     },
 
     clicked_restart: {
@@ -37,11 +43,13 @@ const reducer = (state, action) =>
     clicked_start: {
       ...state,
       appStatus: "active",
+      seconds: secondsPerQuestion * state.apiData.length,
     },
 
-    game_over: {
+    tick: {
       ...state,
-      appStatus: "finished",
+      seconds: state.seconds === 0 ? null : state.seconds - 1,
+      appStatus: state.seconds === 0 ? "finished" : state.appStatus,
     },
   })[action.type] || state
 
@@ -51,32 +59,12 @@ const initialState = {
   clickedOption: null,
   userScore: 0,
   appStatus: "ready",
+  seconds: null,
 }
 
-const secondsPerQuestion = 30
-
-const Timer = ({ appState, onHandleTimer }) => {
-  const [seconds, setSeconds] = useState(
-    secondsPerQuestion * appState.apiData.length,
-  )
-
-  useEffect(() => {
-    let id
-
-    const run = () => {
-      if (seconds === 0) {
-        onHandleTimer({ message: "game_over" })
-        return
-      }
-      id = setTimeout(() => setSeconds((prev) => prev - 1), 1000)
-    }
-
-    run()
-    return () => clearTimeout(id)
-  }, [seconds, onHandleTimer])
-
-  const mins = Math.floor(seconds / 60)
-  const secs = seconds % 60
+const Timer = ({ state }) => {
+  const mins = Math.floor(state.seconds / 60)
+  const secs = state.seconds % 60
 
   return (
     <div className="timer">
@@ -181,6 +169,15 @@ const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
   useEffect(() => {
+    if (state.seconds === null) {
+      return
+    }
+
+    const id = setTimeout(() => dispatch({ type: "tick" }), 1000)
+    return () => clearTimeout(id)
+  }, [state.seconds])
+
+  useEffect(() => {
     fetch(
       "https://raw.githubusercontent.com/MatheusZamo/video-game-quiz/refs/heads/main/src/videogame-questions.json",
     )
@@ -195,7 +192,6 @@ const App = () => {
     dispatch({ type: "clicked_next_question" })
   const handleClickRestart = () => dispatch({ type: "clicked_restart" })
   const handleClickStart = () => dispatch({ type: "clicked_start" })
-  const handleTimer = ({ message }) => dispatch({ type: message })
 
   const userHasAnswered = state.clickedOption !== null
   const maxScore = state.apiData.reduce((acc, q) => acc + q.points, 0)
@@ -229,7 +225,7 @@ const App = () => {
                 onClickOption={handleClickOption}
               />
               <div>
-                <Timer appState={state} onHandleTimer={handleTimer} />
+                <Timer state={state} />
                 {userHasAnswered && (
                   <ButtonNext
                     state={state}
