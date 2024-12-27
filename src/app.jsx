@@ -5,6 +5,7 @@ import { Start } from "@/components/start"
 import { Result } from "@/components/result"
 import { ButtonNext } from "@/components/button-next"
 import { Progress } from "@/components/progress"
+import { Questions } from "@/components/questions"
 
 const secondsPerQuestion = 30
 
@@ -67,34 +68,6 @@ const initialState = {
   appStatus: "ready",
   seconds: null,
 }
-
-const Questions = ({ state, userHasAnswered, onClickOption }) => (
-  <div>
-    <h4>{state.apiData[state.currentQuestion].question}</h4>
-    <ul className="options">
-      {state.apiData[state.currentQuestion].options.map((option, index) => {
-        const answerClass = state.clickedOption === index ? "answer" : ""
-        const correctOrWrongClass = userHasAnswered
-          ? state.apiData[state.currentQuestion]?.correctOption === index
-            ? "correct"
-            : "wrong"
-          : ""
-
-        return (
-          <li key={option}>
-            <button
-              onClick={() => onClickOption(index)}
-              className={`btn btn-option ${answerClass} ${correctOrWrongClass}`}
-              disabled={userHasAnswered}
-            >
-              {option}
-            </button>
-          </li>
-        )
-      })}
-    </ul>
-  </div>
-)
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
