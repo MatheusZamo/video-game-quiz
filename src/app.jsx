@@ -87,6 +87,18 @@ const Header = () => (
   </header>
 )
 
+const Start = ({ state, onClickStart }) => (
+  <div className="start">
+    <h2>Bem vindo ao Quiz dos Videogames!</h2>
+    <h4>{state.apiData.length} questões pra te testar</h4>
+    <div>
+      <button onClick={onClickStart} className="btn btn-ui">
+        Bora começar
+      </button>
+    </div>
+  </div>
+)
+
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
@@ -120,17 +132,8 @@ const App = () => {
       <main className="main">
         <div>
           {state.appStatus === "ready" && (
-            <div className="start">
-              <h2>Bem vindo ao Quiz dos Videogames!</h2>
-              <h4>5 questões pra te testar</h4>
-              <div>
-                <button onClick={handleClickStart} className="btn btn-ui">
-                  Bora começar
-                </button>
-              </div>
-            </div>
+            <Start state={state} onClickStart={handleClickStart} />
           )}
-
           {state.appStatus === "finished" && (
             <>
               <div className="result">
