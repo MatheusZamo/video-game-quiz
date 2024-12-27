@@ -115,6 +115,14 @@ const Result = ({ state, maxScore, onClickRestart }) => {
   )
 }
 
+const ButtonNext = ({ state, onClickNextQuestion }) => (
+  <button onClick={onClickNextQuestion} className="btn btn-ui">
+    {state.currentQuestion === state.apiData.length - 1
+      ? "Finalizar"
+      : "Próxima"}
+  </button>
+)
+
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
@@ -206,11 +214,10 @@ const App = () => {
         </div>
         <div>
           {userHasAnswered && (
-            <button onClick={handleClickNextQuestion} className="btn btn-ui">
-              {state.currentQuestion === state.apiData.length - 1
-                ? "Finalizar"
-                : "Próxima"}
-            </button>
+            <ButtonNext
+              state={state}
+              onClickNextQuestion={handleClickNextQuestion}
+            />
           )}
         </div>
       </main>
