@@ -99,6 +99,22 @@ const Start = ({ state, onClickStart }) => (
   </div>
 )
 
+const Result = ({ state, maxScore, onClickRestart }) => {
+  const percentage = (state.userScore / maxScore) * 100
+  return (
+    <>
+      <div className="result">
+        <span>
+          Você fez <b>{state.userScore}</b> pontos de {maxScore} ({percentage}%)
+        </span>
+      </div>
+      <button onClick={onClickRestart} className="btn btn-ui">
+        Reiniciar quiz
+      </button>
+    </>
+  )
+}
+
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
@@ -121,7 +137,6 @@ const App = () => {
 
   const userHasAnswered = state.clickedOption !== null
   const maxScore = state.apiData.reduce((acc, q) => acc + q.points, 0)
-  const percentage = (state.userScore / maxScore) * 100
   const progressValue = userHasAnswered
     ? state.currentQuestion + 1
     : state.currentQuestion
@@ -135,17 +150,11 @@ const App = () => {
             <Start state={state} onClickStart={handleClickStart} />
           )}
           {state.appStatus === "finished" && (
-            <>
-              <div className="result">
-                <span>
-                  Você fez <b>{state.userScore}</b> pontos de {maxScore} (
-                  {percentage}%)
-                </span>
-              </div>
-              <button onClick={handleClickRestart} className="btn btn-ui">
-                Reiniciar quiz
-              </button>
-            </>
+            <Result
+              state={state}
+              maxScore={maxScore}
+              onClickRestart={handleClickRestart}
+            />
           )}
 
           {state.apiData.length > 0 && state.appStatus === "active" && (
