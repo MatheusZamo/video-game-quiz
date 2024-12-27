@@ -123,6 +123,27 @@ const ButtonNext = ({ state, onClickNextQuestion }) => (
   </button>
 )
 
+const Progress = ({ state, maxScore, userHasAnswered }) => {
+  const progressValue = userHasAnswered
+    ? state.currentQuestion + 1
+    : state.currentQuestion
+  return (
+    <header className="progress">
+      <label>
+        <progress max={state.apiData.length} value={progressValue}>
+          {progressValue}
+        </progress>
+        <span>
+          Questão <b>{state.currentQuestion + 1}</b> / {state.apiData.length}
+        </span>
+        <span>
+          <b>{state.userScore}</b> / {maxScore}
+        </span>
+      </label>
+    </header>
+  )
+}
+
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
@@ -145,9 +166,6 @@ const App = () => {
 
   const userHasAnswered = state.clickedOption !== null
   const maxScore = state.apiData.reduce((acc, q) => acc + q.points, 0)
-  const progressValue = userHasAnswered
-    ? state.currentQuestion + 1
-    : state.currentQuestion
 
   return (
     <div className="app">
@@ -167,20 +185,11 @@ const App = () => {
 
           {state.apiData.length > 0 && state.appStatus === "active" && (
             <>
-              <header className="progress">
-                <label>
-                  <progress max={state.apiData.length} value={progressValue}>
-                    {progressValue}
-                  </progress>
-                  <span>
-                    Questão <b>{state.currentQuestion + 1}</b> /{" "}
-                    {state.apiData.length}
-                  </span>
-                  <span>
-                    <b>{state.userScore}</b> / {maxScore}
-                  </span>
-                </label>
-              </header>
+              <Progress
+                state={state}
+                maxScore={maxScore}
+                userHasAnswered={userHasAnswered}
+              />
               <h4>{state.apiData[state.currentQuestion].question}</h4>
               <ul className="options">
                 {state.apiData[state.currentQuestion].options.map(
