@@ -144,6 +144,34 @@ const Progress = ({ state, maxScore, userHasAnswered }) => {
   )
 }
 
+const Questions = ({ state, userHasAnswered, onClickOption }) => (
+  <div>
+    <h4>{state.apiData[state.currentQuestion].question}</h4>
+    <ul className="options">
+      {state.apiData[state.currentQuestion].options.map((option, index) => {
+        const answerClass = state.clickedOption === index ? "answer" : ""
+        const correctOrWrongClass = userHasAnswered
+          ? state.apiData[state.currentQuestion]?.correctOption === index
+            ? "correct"
+            : "wrong"
+          : ""
+
+        return (
+          <li key={option}>
+            <button
+              onClick={() => onClickOption(index)}
+              className={`btn btn-option ${answerClass} ${correctOrWrongClass}`}
+              disabled={userHasAnswered}
+            >
+              {option}
+            </button>
+          </li>
+        )
+      })}
+    </ul>
+  </div>
+)
+
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
@@ -190,43 +218,21 @@ const App = () => {
                 maxScore={maxScore}
                 userHasAnswered={userHasAnswered}
               />
-              <h4>{state.apiData[state.currentQuestion].question}</h4>
-              <ul className="options">
-                {state.apiData[state.currentQuestion].options.map(
-                  (option, index) => {
-                    const answerClass =
-                      state.clickedOption === index ? "answer" : ""
-                    const correctOrWrongClass = userHasAnswered
-                      ? state.apiData[state.currentQuestion]?.correctOption ===
-                        index
-                        ? "correct"
-                        : "wrong"
-                      : ""
-
-                    return (
-                      <li key={option}>
-                        <button
-                          onClick={() => handleClickOption(index)}
-                          className={`btn btn-option ${answerClass} ${correctOrWrongClass}`}
-                          disabled={userHasAnswered}
-                        >
-                          {option}
-                        </button>
-                      </li>
-                    )
-                  },
+              <Questions
+                state={state}
+                userHasAnswered={userHasAnswered}
+                onClickOption={handleClickOption}
+              />
+              <div>
+                <Timer appState={state} onHandleTimer={handleTimer} />
+                {userHasAnswered && (
+                  <ButtonNext
+                    state={state}
+                    onClickNextQuestion={handleClickNextQuestion}
+                  />
                 )}
-              </ul>
-              <Timer appState={state} onHandleTimer={handleTimer} />
+              </div>
             </>
-          )}
-        </div>
-        <div>
-          {userHasAnswered && (
-            <ButtonNext
-              state={state}
-              onClickNextQuestion={handleClickNextQuestion}
-            />
           )}
         </div>
       </main>
