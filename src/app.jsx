@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react"
+import { useEffect, useReducer, useCallback } from "react"
 import { Timer } from "@/components/timer"
 import { Header } from "@/components/header"
 import { Start } from "@/components/start"
@@ -6,8 +6,6 @@ import { Result } from "@/components/result"
 import { ButtonNext } from "@/components/button-next"
 import { Progress } from "@/components/progress"
 import { Questions } from "@/components/questions"
-
-const secondsPerQuestion = 30
 
 const reducer = (state, action) =>
   ({
@@ -33,10 +31,6 @@ const reducer = (state, action) =>
         state.currentQuestion + 1 === state.apiData.length
           ? "finished"
           : state.appStatus,
-      seconds:
-        state.currentQuestion + 1 === state.apiData.length
-          ? null
-          : state.seconds,
     },
 
     clicked_restart: {
@@ -50,13 +44,11 @@ const reducer = (state, action) =>
     clicked_start: {
       ...state,
       appStatus: "active",
-      seconds: secondsPerQuestion * state.apiData.length,
     },
 
-    tick: {
+    game_over: {
       ...state,
-      seconds: state.seconds === 0 ? null : state.seconds - 1,
-      appStatus: state.seconds === 0 ? "finished" : state.appStatus,
+      appStatus: "finished",
     },
   })[action.type] || state
 
@@ -66,20 +58,10 @@ const initialState = {
   clickedOption: null,
   userScore: 0,
   appStatus: "ready",
-  seconds: null,
 }
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
-
-  useEffect(() => {
-    if (state.seconds === null) {
-      return
-    }
-
-    const id = setTimeout(() => dispatch({ type: "tick" }), 1000)
-    return () => clearTimeout(id)
-  }, [state.seconds])
 
   useEffect(() => {
     fetch(
@@ -96,6 +78,10 @@ const App = () => {
     dispatch({ type: "clicked_next_question" })
   const handleClickRestart = () => dispatch({ type: "clicked_restart" })
   const handleClickStart = () => dispatch({ type: "clicked_start" })
+  const handleTimer = useCallback(
+    ({ message }) => dispatch({ type: message }),
+    [],
+  )
 
   const userHasAnswered = state.clickedOption !== null
   const maxScore = state.apiData.reduce((acc, q) => acc + q.points, 0)
@@ -129,7 +115,7 @@ const App = () => {
                 onClickOption={handleClickOption}
               />
               <div>
-                <Timer state={state} />
+                <Timer state={state} onHandleTimer={handleTimer} />
                 {userHasAnswered && (
                   <ButtonNext
                     state={state}
