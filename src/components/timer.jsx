@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import styled from "styled-components"
 
 const secondsPerQuestion = 30
 
@@ -25,10 +26,18 @@ const Timer = ({ state, onHandleTimer }) => {
   const mins = Math.floor(seconds / 60)
   const secs = seconds % 60
 
+  const Div = styled.div`
+    float: left;
+    font-size: 1.8rem;
+    color: #495057;
+    padding: 1.35rem 2.8rem;
+    border-radius: 100px;
+  `
+
   return (
-    <div className="timer">
+    <Div>
       {mins < 10 ? `0${mins}` : mins}:{secs < 10 ? `0${secs}` : secs}
-    </div>
+    </Div>
   )
 }
 

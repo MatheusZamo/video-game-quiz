@@ -6,6 +6,7 @@ import { Result } from "@/components/result"
 import { ButtonNext } from "@/components/button-next"
 import { Progress } from "@/components/progress"
 import { Questions } from "@/components/questions"
+import styled from "styled-components"
 
 const reducer = (state, action) =>
   ({
@@ -86,10 +87,20 @@ const App = () => {
   const userHasAnswered = state.clickedOption !== null
   const maxScore = state.apiData.reduce((acc, q) => acc + q.points, 0)
 
+  const Div = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  `
+  const Main = styled.main`
+    width: 50rem;
+  `
+
   return (
-    <div className="app">
+    <Div>
       <Header />
-      <main className="main">
+      <Main>
         <div>
           {state.appStatus === "ready" && (
             <Start state={state} onClickStart={handleClickStart} />
@@ -126,8 +137,8 @@ const App = () => {
             </>
           )}
         </div>
-      </main>
-    </div>
+      </Main>
+    </Div>
   )
 }
 
