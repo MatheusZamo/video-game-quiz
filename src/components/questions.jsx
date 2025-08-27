@@ -1,3 +1,4 @@
+import { OptionButton } from "./shared/button"
 import styled from "styled-components"
 
 const Questions = ({ state, userHasAnswered, onClickOption }) => {
@@ -17,26 +18,19 @@ const Questions = ({ state, userHasAnswered, onClickOption }) => {
     <div>
       <H4>{state.apiData[state.currentQuestion].question}</H4>
       <Ul>
-        {state.apiData[state.currentQuestion].options.map((option, index) => {
-          const answerClass = state.clickedOption === index ? "answer" : ""
-          const correctOrWrongClass = userHasAnswered
-            ? state.apiData[state.currentQuestion]?.correctOption === index
-              ? "correct"
-              : "wrong"
-            : ""
-
-          return (
-            <li key={option}>
-              <button
-                onClick={() => onClickOption(index)}
-                className={`btn btn-option ${answerClass} ${correctOrWrongClass}`}
-                disabled={userHasAnswered}
-              >
-                {option}
-              </button>
-            </li>
-          )
-        })}
+        {state.apiData[state.currentQuestion].options.map((option, index) => (
+          <li key={option}>
+            <OptionButton
+              onClick={() => onClickOption(index)}
+              disabled={userHasAnswered}
+              $state={state}
+              $index={index}
+              $userHasAnswered={userHasAnswered}
+            >
+              {option}
+            </OptionButton>
+          </li>
+        ))}
       </Ul>
     </div>
   )

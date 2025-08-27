@@ -1,23 +1,11 @@
 import styled from "styled-components"
+import { Button } from "./shared/button"
 
 const Start = ({ state, onClickStart }) => {
   const Div = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-  `
-  const Button = styled.button`
-    display: block;
-    font-family: inherit;
-    color: inherit;
-    background-color: transparent;
-    font-size: 2rem;
-    padding: 1.2rem 2.4rem;
-    cursor: pointer;
-    border-radius: 100px;
-    transition: 0.3s;
-    border: 1px solid #d3d3d3;
-    float: right;
   `
   const H2 = styled.h2`
     font-size: 3.6rem;
