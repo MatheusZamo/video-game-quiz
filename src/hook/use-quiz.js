@@ -65,22 +65,30 @@ const useQuiz = () => {
       .catch((error) => alert(error.message))
   }, [])
 
-  const handleClickOption = (index) =>
-    dispatch({ type: "clicked_some_option", index })
-  const handleClickNextQuestion = () =>
-    dispatch({ type: "clicked_next_question" })
-  const handleClickRestart = () => dispatch({ type: "clicked_restart" })
-  const handleClickStart = () => dispatch({ type: "clicked_start" })
+  const handleClickOption = useCallback(
+    (index) => dispatch({ type: "clicked_some_option", index }),
+    [],
+  )
+  const handleClickNextQuestion = useCallback(
+    () => dispatch({ type: "clicked_next_question" }),
+    [],
+  )
+  const handleClickRestart = useCallback(
+    () => dispatch({ type: "clicked_restart" }),
+    [],
+  )
+  const handleClickStart = useCallback(
+    () => dispatch({ type: "clicked_start" }),
+    [],
+  )
   const handleTimer = useCallback(
     ({ message }) => dispatch({ type: message }),
     [],
   )
-  const userHasAnswered = state.clickedOption !== null
   const maxScore = state.apiData.reduce((acc, q) => acc + q.points, 0)
 
   return {
     state,
-    userHasAnswered,
     maxScore,
     handleClickOption,
     handleClickNextQuestion,

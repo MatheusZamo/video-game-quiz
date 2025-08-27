@@ -1,16 +1,12 @@
-import { Timer } from "@/components/timer"
 import { Start } from "@/components/start"
 import { Result } from "@/components/result"
-import { ButtonNext } from "@/components/button-next"
-import { Progress } from "@/components/progress"
-import { Questions } from "@/components/questions"
 import styled from "styled-components"
 import { useQuiz } from "../hook/use-quiz"
+import { Quiz } from "./quiz"
 
 const Main = () => {
   const {
     state,
-    userHasAnswered,
     maxScore,
     handleClickOption,
     handleClickNextQuestion,
@@ -37,27 +33,13 @@ const Main = () => {
         )}
 
         {state.apiData.length > 0 && state.appStatus === "active" && (
-          <>
-            <Progress
-              state={state}
-              maxScore={maxScore}
-              userHasAnswered={userHasAnswered}
-            />
-            <Questions
-              state={state}
-              userHasAnswered={userHasAnswered}
-              onClickOption={handleClickOption}
-            />
-            <div>
-              <Timer state={state} onHandleTimer={handleTimer} />
-              {userHasAnswered && (
-                <ButtonNext
-                  state={state}
-                  onClickNextQuestion={handleClickNextQuestion}
-                />
-              )}
-            </div>
-          </>
+          <Quiz
+            state={state}
+            maxScore={maxScore}
+            onClickNextQuestion={handleClickNextQuestion}
+            onHandleTimer={handleTimer}
+            onClickOption={handleClickOption}
+          />
         )}
       </div>
     </StyledMain>
