@@ -1,7 +1,8 @@
 import { Timer } from "@/components/timer"
 import { Progress } from "@/components/progress"
 import { Questions } from "@/components/questions"
-import { NextButton } from "./shared/button"
+import { Button } from "./shared/button"
+import styled from "styled-components"
 
 const Quiz = ({
   state,
@@ -11,6 +12,10 @@ const Quiz = ({
   onClickNextQuestion,
 }) => {
   const userHasAnswered = state.clickedOption !== null
+
+  const NextButton = styled(Button)`
+    float: right;
+  `
   return (
     <>
       <Progress

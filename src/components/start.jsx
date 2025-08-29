@@ -17,12 +17,13 @@ const Start = ({ state, onClickStart }) => {
     font-weight: 600;
     margin-bottom: 2.4rem;
   `
+  const StartButton = styled(Button)``
   return (
     <Div>
       <H2>Bem vindo ao Quiz dos Videogames!</H2>
       <H4>{state.apiData.length} questões pra te testar</H4>
       <div>
-        <Button onClick={onClickStart}>Bora começar</Button>
+        <StartButton onClick={onClickStart}>Bora começar</StartButton>
       </div>
     </Div>
   )
