@@ -11,6 +11,17 @@ const Progress = ({ state, maxScore, userHasAnswered }) => {
     width: 100%;
     height: 12px;
     grid-column: 1 / -1;
+
+    ::-webkit-progress-bar {
+      background-color: #d2d2d2;
+      border-radius: 100px;
+    }
+
+    ::-webkit-progress-value {
+      background-color: ${({ theme }) => theme.colors.blue};
+      border-radius: 100px;
+      transition: all 0.35s;
+    }
   `
   const Label = styled.label`
     width: 50rem;
@@ -24,7 +35,7 @@ const Progress = ({ state, maxScore, userHasAnswered }) => {
   const Header = styled.header`
     margin-bottom: 4rem;
     font-size: 1.8rem;
-    color: #495057;
+    color: ${({ theme }) => theme.colors.gray};
   `
   return (
     <Header>

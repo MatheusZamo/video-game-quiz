@@ -15,7 +15,8 @@ const Questions = ({ state, userHasAnswered, onClickOption }) => {
     list-style: none;
   `
   const OptionButton = styled(Button)`
-    ${({ $state, $index, $userHasAnswered }) => {
+    ${({ $state, $index, $userHasAnswered, theme }) => {
+      const { colors } = theme
       const apply = ({ correct, wrong }) =>
         $userHasAnswered
           ? $state.apiData[$state.currentQuestion]?.correctOption === $index
@@ -26,16 +27,16 @@ const Questions = ({ state, userHasAnswered, onClickOption }) => {
       return css`
     transform: ${$state.clickedOption === $index ? "translateX(2rem)" : ""};
     background-color: ${apply({
-      correct: "var(--color-correct)",
-      wrong: "var(--color-wrong)",
+      correct: colors.green,
+      wrong: colors.magenta,
     })};
     border: ${apply({
-      correct: "2px solid var(--color-correct)",
-      wrong: "2px solid var(--color-wrong)",
+      correct: colors.green,
+      wrong: colors.magenta,
     })};
     color: ${apply({
-      correct: "var(--color-dark)",
-      wrong: "var(--color-lightest)",
+      correct: colors.gray,
+      wrong: colors.white,
     })};
     width: 100%;
     text-align: : left;

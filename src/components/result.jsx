@@ -5,8 +5,8 @@ import { Button } from "./shared/button"
 const Result = ({ state, maxScore, onClickRestart }) => {
   const resultMessage = getResultMessage({ score: state.userScore, maxScore })
   const Div = styled.div`
-    background-color: var(--color-theme);
-    color: var(--color-dark);
+    background-color: ${({ theme }) => theme.colors.blue};
+    color: ${({ theme }) => theme.colors.gray};
     border-radius: 100px;
     text-align: center;
     padding: 2rem 0;

@@ -29,7 +29,7 @@ const Timer = ({ state, onHandleTimer }) => {
   const Div = styled.div`
     float: left;
     font-size: 1.8rem;
-    color: #495057;
+    color: ${({ theme }) => theme.colors.gray}
     padding: 1.35rem 2.8rem;
     border-radius: 100px;
   `
